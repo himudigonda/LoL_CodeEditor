@@ -1,5 +1,7 @@
 # LoL_CodeEditor - AI-powered Code Editor
 
+![alt text](./assets/ui.png)
+
 LoL_CodeEditor is a high-performance, AI-powered collaborative code editor built with Python. It offers real-time collaboration, advanced code intelligence, syntax highlighting, and integrates a suite of developer tools such as chat-based interaction, a file explorer, terminal access, and search & replace features. Designed for speed and efficiency, LoL_CodeEditor ensures minimal startup time and low memory usage.
 
 ---
