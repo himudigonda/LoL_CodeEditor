@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication
 from src.ui.main_window import MainWindow
 
 def run_editor():
-    """Run the LightCode editor."""
+    """Entry point to start the LightCode editor."""
     app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
