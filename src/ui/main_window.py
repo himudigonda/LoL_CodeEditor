@@ -42,10 +42,10 @@ class SearchReplaceDialog(QDialog):
         self.editor.setPlainText(updated_content)
 
 class MainWindow(QMainWindow):
-    """Main window for LightCode."""
+    """Main window for LoL_CodeEditor."""
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("LightCode - AI-powered Code Editor")
+        self.setWindowTitle("LoL_CodeEditor - AI-powered Code Editor")
         self.setGeometry(100, 100, 1400, 900)
 
         self.initialize_ui()
