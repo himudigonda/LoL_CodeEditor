@@ -9,11 +9,10 @@ class LineNumberArea(QWidget):
     def __init__(self, editor):
         super().__init__(editor)
         self.editor = editor
-        self.setFixedWidth(50)
 
     def paintEvent(self, event):
         """Paint the line numbers using QPainter."""
-        painter = QPainter(self)  # Properly initialize QPainter
+        painter = QPainter(self)
         painter.fillRect(event.rect(), QColor(240, 240, 240))  # Light gray background
 
         block = self.editor.firstVisibleBlock()
@@ -21,12 +20,11 @@ class LineNumberArea(QWidget):
         top = self.editor.blockBoundingGeometry(block).translated(self.editor.contentOffset()).top()
         bottom = top + self.editor.blockBoundingRect(block).height()
 
-        # Draw each visible block number
         while block.isValid() and top <= event.rect().bottom():
             if block.isVisible() and bottom >= event.rect().top():
                 number = str(block_number + 1)
                 painter.drawText(
-                    0, int(top), self.width(), self.editor.fontMetrics().height(),
+                    0, int(top), self.width() - 5, self.editor.fontMetrics().height(),
                     Qt.AlignRight, number
                 )
             block = block.next()
@@ -35,14 +33,13 @@ class LineNumberArea(QWidget):
             block_number += 1
 
     def update_width(self, block_count):
-        """Adjust the width based on the number of lines."""
-        width = max(30, self.fontMetrics().width(str(block_count)) + 10)
+        """Adjust the width based on the number of digits in the line numbers."""
+        width = max(30, self.fontMetrics().horizontalAdvance(str(block_count)) + 10)
         self.setFixedWidth(width)
 
-    def update(self, *args):
-        """Repaint and resize the widget."""
-        self.update_width(self.editor.blockCount())
-        super().update(*args)
+    def update_area(self):
+        """Repaint the line number area."""
+        self.update()
 
 
 class CodeEditor(QPlainTextEdit):
@@ -56,19 +53,19 @@ class CodeEditor(QPlainTextEdit):
         font.setStyleHint(QFont.Monospace)
         self.setFont(font)
 
-        # Connect signals to synchronize the editor and line numbers
+        # Connect signals to keep the line numbers in sync with the editor
         self.blockCountChanged.connect(self.line_number_area.update_width)
         self.updateRequest.connect(self.update_line_number_area)
-        self.verticalScrollBar().valueChanged.connect(self.line_number_area.update)
+        self.verticalScrollBar().valueChanged.connect(self.line_number_area.update_area)
 
     def resizeEvent(self, event):
-        """Resize the line number area along with the editor."""
+        """Resize the line number area when the editor is resized."""
         super().resizeEvent(event)
         rect = self.contentsRect()
-        self.line_number_area.setGeometry(QRect(rect.left(), rect.top(), 50, rect.height()))
+        self.line_number_area.setGeometry(QRect(rect.left(), rect.top(), self.line_number_area.width(), rect.height()))
 
     def update_line_number_area(self, rect, dy):
-        """Update the line number area on editor changes."""
+        """Update the line number area when scrolling."""
         if dy:
             self.line_number_area.scroll(0, dy)
         else:
