@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 
+
 class FileExplorer(QWidget):
     """Improved File Explorer with dynamic search and optimized folder loading."""
     def __init__(self, open_file_callback):
@@ -51,25 +52,25 @@ class FileExplorer(QWidget):
                 child_item.setData(0, Qt.UserRole, entry_path)
 
                 if os.path.isdir(entry_path):
-                    # Mark as expandable but don't load children yet (for lazy loading)
+                    # Mark as expandable for lazy loading
                     child_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
                 else:
                     child_item.setChildIndicatorPolicy(QTreeWidgetItem.DontShowIndicatorWhenChildless)
         except PermissionError:
-            # Handle cases where the program doesn't have permission to access a folder
             QMessageBox.warning(self, "Permission Denied", f"Cannot access: {path}")
 
     def open_item(self, item, column):
-        """Handle double-clicks to open files or load folders."""
+        """Handle double-clicks to open files or expand folders."""
         full_path = item.data(0, Qt.UserRole)
 
         if os.path.isdir(full_path):
-            # If the folder isn't loaded yet, load it dynamically
+            # Check if the folder is already loaded
             if item.childCount() == 0:
+                # Lazy load the folder's contents
                 self.add_children(item, full_path)
-            item.setExpanded(not item.isExpanded())  # Toggle expansion
+            item.setExpanded(True)  # Expand the folder on double-click
         else:
-            # If it's a file, open it
+            # If it's a file, open it in the editor
             try:
                 with open(full_path, 'r') as f:
                     content = f.read()
